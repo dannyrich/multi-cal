@@ -72,6 +72,12 @@ var MultiCal = function (userSettings) {
             }
         });
 
+        $(document).on('keypress', function (e) {
+            if (e.keyCode === 27 && isShowing) {
+                hide();
+            }
+        });
+
         if (settings.element) {
             settings.element.on('focus', function () {
                 show();
@@ -377,6 +383,7 @@ var MultiCal = function (userSettings) {
 
     function returnDates() {
         if (settings.element) {
+            var string;
             var datesplits = [ selectedDates[0].split('-'), selectedDates[1].split('-') ];
             var dates = [ new Date(datesplits[0][2], datesplits[0][0], datesplits[0][1]), new Date(datesplits[1][2], datesplits[1][0], datesplits[1][1]) ];
             var dateStrings = [
@@ -392,7 +399,7 @@ var MultiCal = function (userSettings) {
             ];
 
             if (dates[0].getTime() === dates[1].getTime()) {
-                settings.element.val(dateStrings[0].month + ' ' + dateStrings[0].day + ', ' + dateStrings[0].year);
+                string = dateStrings[0].month + ' ' + dateStrings[0].day + ', ' + dateStrings[0].year;
             } else {
                 var bothYears = true,
                     bothMonths = true;
@@ -405,7 +412,7 @@ var MultiCal = function (userSettings) {
                     bothMonths = false;
                 }
 
-                var string = dateStrings[0].month;
+                string = dateStrings[0].month;
 
                 if (bothYears) {
                     string += ' ' + dateStrings[0].day + ', ' + dateStrings[0].year + ' - ' + dateStrings[1].month + ' ' + dateStrings[1].day + ', ' + dateStrings[1].year;
@@ -415,11 +422,17 @@ var MultiCal = function (userSettings) {
                     string += ' ' + dateStrings[0].day + ' - ' + dateStrings[1].day + ', ' + dateStrings[0].year;
                 }
 
-                settings.element.val(string);
+            }
 
-                if (typeof settings.onSet === 'function') {
-                    settings.onSet(string, selectedDates[0], selectedDates[1]);
-                }
+            settings.element.val(string);
+            if (typeof settings.onSet === 'function') {
+                var start = selectedDates[0].split('-');
+                var end = selectedDates[1].split('-');
+
+                start[0] = parseInt(start[0], 10) + 1;
+                end[0] = parseInt(end[0], 10) + 1;
+
+                settings.onSet(string, start.join('-'), end.join('-'));
             }
         }
     }
