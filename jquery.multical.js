@@ -107,6 +107,7 @@ var MultiCal = function (userSettings) {
                     }
 
                     if (split.length === 3) {
+                        split[0] -= 1;
                         startAndEnd[key] = split.join('-');
                     }
                 }
@@ -189,7 +190,7 @@ var MultiCal = function (userSettings) {
     function getMonthYear(month, year, next) {
         month = parseInt(month, 10);
         year = parseInt(year, 10);
-        
+
         return {
             month: ((next) ? ( (month === 11) ? 0 : month + 1 ) : ( (month === 0) ? 11 : month - 1 )),
             year: ((next && month === 11) ? year + 1 : (!next && month === 0) ? year - 1 : year)
